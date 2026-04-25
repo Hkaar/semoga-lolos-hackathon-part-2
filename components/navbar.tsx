@@ -9,6 +9,7 @@ import Image from "next/image";
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   // Mendeteksi pergerakan scroll
   useEffect(() => {
@@ -18,18 +19,57 @@ export default function Navbar() {
       } else {
         setIsScrolled(false);
       }
+
+      // Deteksi section aktif berdasarkan posisi scroll
+      const sections = ["problems", "how-it-works", "why-it-matters", "product", "about-us"];
+      let current = "";
+      
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          // Cek apakah elemen sedang berada di tengah viewport
+          if (rect.top <= 150 && rect.bottom >= 150) {
+            current = section;
+            break;
+          }
+        }
+      }
+      setActiveSection(current);
     };
 
     window.addEventListener("scroll", handleScroll);
+    // Panggil sekali saat mount untuk mengecek posisi awal
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Fungsi dinamis untuk memberikan style link desktop yang aktif
+  const getLinkClass = (section: string) => {
+    const isActive = activeSection === section;
+    return `text-sm font-semibold px-4 py-2 rounded-full transition-all duration-200 ${
+      isActive
+        ? "text-emerald-700 bg-emerald-50 shadow-sm"
+        : "text-slate-600 hover:text-emerald-700 hover:bg-slate-100/50"
+    }`;
+  };
+
+  // Fungsi dinamis untuk memberikan style link mobile yang aktif
+  const getMobileLinkClass = (section: string) => {
+    const isActive = activeSection === section;
+    return `text-sm font-semibold px-4 py-3 rounded-xl transition-colors ${
+      isActive
+        ? "text-emerald-700 bg-emerald-50"
+        : "text-slate-600 hover:text-emerald-700 hover:bg-slate-50"
+    }`;
+  };
 
   return (
     // Wrapper luar agar navbar mengambang di tengah (Floating)
     <div className="fixed top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
       <nav
         // Menggunakan w-full dan max-w-5xl, serta "relative" untuk posisi dropdown mobile
-        className={`pointer-events-auto relative flex items-center justify-between px-2.5 py-3 w-full max-w-5xl rounded-full transition-all duration-500 ${
+        className={`pointer-events-auto relative flex items-center justify-between px-2.5 py-3.5 w-full max-w-5xl rounded-full transition-all duration-500 ${
           isScrolled
             ? "bg-white/80 backdrop-blur-xl border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
             : "bg-white/60 backdrop-blur-md border border-white/60 shadow-sm"
@@ -45,9 +85,9 @@ export default function Navbar() {
             <Image
               src="/images/logo.svg"
               width={130}
-              height={32}
+              height={100}
               alt="Logo KlimaBot"
-              className="h-6 md:h-7 w-auto object-contain"
+              className="h-6 md:h-8 w-auto object-contain"
               priority
             />
           </Link>
@@ -56,29 +96,29 @@ export default function Navbar() {
         {/* TENGAH: Menu Desktop (Clean Text Links) */}
         <div className="hidden md:flex items-center gap-1">
           <Link
+            href="#problems"
+            className={getLinkClass("problems")}
+          >
+            Problems
+          </Link>
+          <Link
             href="#how-it-works"
-            className="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-4 py-2 rounded-full hover:bg-slate-100/50 transition-all duration-200"
+            className={getLinkClass("how-it-works")}
           >
             How it works
           </Link>
           <Link
             href="#why-it-matters"
-            className="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-4 py-2 rounded-full hover:bg-slate-100/50 transition-all duration-200"
+            className={getLinkClass("why-it-matters")}
           >
             Why it matters
           </Link>
-          <Link
+          {/* <Link
             href="#product"
-            className="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-4 py-2 rounded-full hover:bg-slate-100/50 transition-all duration-200"
+            className={getLinkClass("product")}
           >
             Product
-          </Link>
-          <Link
-            href="#about-us"
-            className="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-4 py-2 rounded-full hover:bg-slate-100/50 transition-all duration-200"
-          >
-            About us
-          </Link>
+          </Link> */}
         </div>
 
         {/* KANAN: Tombol CTA & Mobile Hamburger */}
@@ -88,8 +128,8 @@ export default function Navbar() {
             asChild
             className="cursor-pointer hidden md:flex h-10 px-6 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-[0_4px_14px_rgba(5,150,105,0.3)] group transition-all"
           >
-            <Link href="/admin">
-              Dashboard
+            <Link href="/login">
+              Login
               <ArrowRight className="ml-1.5 size-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </Button>
@@ -110,30 +150,37 @@ export default function Navbar() {
         {isMobileMenuOpen && (
           <div className="absolute top-[calc(100%+12px)] left-0 w-full bg-white/95 backdrop-blur-xl border border-slate-200/60 shadow-[0_15px_40px_rgb(0,0,0,0.12)] rounded-2xl p-3 flex flex-col gap-1 md:hidden">
             <Link
+              href="#problems"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={getMobileLinkClass("problems")}
+            >
+              Problems
+            </Link>
+            <Link
               href="#how-it-works"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors"
+              className={getMobileLinkClass("how-it-works")}
             >
               How it works
             </Link>
             <Link
               href="#why-it-matters"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors"
+              className={getMobileLinkClass("why-it-matters")}
             >
               Why it matters
             </Link>
             <Link
               href="#product"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors"
+              className={getMobileLinkClass("product")}
             >
               Product
             </Link>
             <Link
               href="#about-us"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors"
+              className={getMobileLinkClass("about-us")}
             >
               About us
             </Link>

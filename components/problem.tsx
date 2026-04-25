@@ -171,7 +171,7 @@ export default function Problem() {
   ];
 
   return (
-    <section className="relative py-24 lg:py-32 px-5 sm:px-6 max-w-7xl mx-auto overflow-hidden bg-white">
+    <section id="problems" className="relative py-24 lg:py-32 px-5 sm:px-6 max-w-7xl mx-auto overflow-hidden bg-white">
       
       {/* ── HEADER SECTION ── */}
       <div className="flex flex-col items-center text-center mb-16 lg:mb-24">
