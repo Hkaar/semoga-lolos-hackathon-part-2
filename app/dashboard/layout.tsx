@@ -12,7 +12,6 @@ export default function AdminLayout({
 }) {
   return (
     <div className={`${geistSans.className} flex h-screen w-full bg-white text-slate-900`}>
-      <Sidebar />
       <main className="flex-1 overflow-y-auto bg-white border-l border-gray-100">
         {children}
       </main>
