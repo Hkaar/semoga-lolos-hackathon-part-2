@@ -22,7 +22,8 @@ import {
   CheckCircle2,
   Copy,
   Landmark,
-  Clock
+  Clock,
+  ArrowLeft
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -278,6 +279,15 @@ export default function ProfilePage() {
         <Navbar />
 
         <div className="mb-6">
+          {/* TOMBOL KEMBALI */}
+          <a 
+            href="/dashboard" 
+            className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-green-600 transition-colors mb-4 group"
+          >
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+            Kembali ke Dashboard
+          </a>
+
           <h1 className="text-xl font-bold text-gray-900">Profil Perusahaan</h1>
           <p className="text-sm text-gray-400 mt-0.5">
             Kelola informasi perusahaan, preferensi dampak, dan pengaturan akun Anda.
