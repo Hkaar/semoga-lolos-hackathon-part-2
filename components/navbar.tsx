@@ -29,7 +29,7 @@ export default function Navbar() {
     <div className="fixed top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
       <nav
         // Menggunakan w-full dan max-w-5xl, serta "relative" untuk posisi dropdown mobile
-        className={`pointer-events-auto relative flex items-center justify-between px-2.5 py-2 w-full max-w-5xl rounded-full transition-all duration-500 ${
+        className={`pointer-events-auto relative flex items-center justify-between px-2.5 py-3 w-full max-w-5xl rounded-full transition-all duration-500 ${
           isScrolled
             ? "bg-white/80 backdrop-blur-xl border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
             : "bg-white/60 backdrop-blur-md border border-white/60 shadow-sm"
