@@ -19,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Klima",
   description: "AI Verifikasi | Aksi Nyata | Dampak Terukur",
+  icons: {
+    icon: "/favicon-logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -39,6 +42,7 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
+        
         <main>{children}</main>
       </body>
     </html>

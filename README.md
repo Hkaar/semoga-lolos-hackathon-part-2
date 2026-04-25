@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Semoga Lolos Hackathon part 2 [Front End]
 
-## Getting Started
+Hackfest 2026 - Code for Humanity
 
-First, run the development server:
+> Repository for the Back End
+>
+> <https://github.com/Hkaar/Semoga-Lolos-Hackathon-part-2-backend>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Fitur yang Sudah Dikembangkan
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Kirim foto via Telegram
+- AI cek keaslian foto
+- AI scoring dampak lingkungan
+- Mint Eco-token di Solana sebagai reward
+- Blockchain receipt per aksi terverifikasi
+- Bukti foto per submisi
+- Skor dampak + audit trail
+- Receipt blockchain (anti-tamper)
+- Dana aksi terverifikasi langsung
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Fitur yang Akan Dikembangkan
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Live feed aksi lapangan terverifikasi
+- Peta lokasi GPS
+- Sinkronisasi data real-time (dashboard belum selesai)
 
-## Learn More
+## Tech Stack [FRONT END]
 
-To learn more about Next.js, take a look at the following resources:
+- TypeScript
+- Node.js
+- Next.js
+- React
+- Shadcn
+- Tailwind CSS
+- Magic UI
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack [BACK END]
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- TypeScript
+- Bun
+- Elysia.js
+- MongoDB
+- Solana (Blockchain)
+- Gemini API
+- Grammy.js - Telegram Bot
+- Nominatim (OpenStreetMap) - Reverse Geocoding
