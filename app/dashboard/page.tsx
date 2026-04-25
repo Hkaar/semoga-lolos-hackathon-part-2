@@ -8,6 +8,8 @@ import {
   TrendingUp, 
   ChevronDown, 
   Check,
+  User,
+  LogOut,
   LucideIcon
 } from 'lucide-react';
 
@@ -79,30 +81,90 @@ const formatTrend = (delta: number | null | undefined) => {
 
 // --- SUB COMPONENTS ---
 
-const Navbar = () => (
-  <nav className="flex justify-between items-center py-4 mb-6 bg-white px-6 shadow-sm rounded-xl">
-    <div className="flex items-center">
-      <img 
-        src="images/logo.png" 
-        alt="Klimabot Logo" 
-        className="h-10 object-contain" 
-        onError={(e) => {
-          e.currentTarget.style.display = 'none';
-          e.currentTarget.parentElement!.innerHTML = '<span class="text-xl font-bold text-green-700 tracking-tight">klimabot</span>';
-        }}
-      />
-    </div>
-    <div className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
-      <img 
-        src="https://i.pravatar.cc/150?u=pertamina" 
-        alt="Profile" 
-        className="w-8 h-8 rounded-full border border-gray-200"
-      />
-      <span className="text-sm font-medium text-gray-700">PT. Pertamina</span>
-      <ChevronDown className="w-4 h-4 text-gray-400" />
-    </div>
-  </nav>
-);
+const Navbar = () => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Menutup dropdown jika klik di luar elemen dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Fungsi untuk logout
+  const handleLogout = () => {
+    // Hapus token yang tersimpan
+    localStorage.removeItem('auth_token');
+    // Arahkan kembali ke halaman login
+    window.location.href = '/login';
+  };
+
+  return (
+    <nav className="flex justify-between items-center py-4 mb-6 bg-white px-6 shadow-sm rounded-xl">
+      <div className="flex items-center">
+        <img 
+          src="images/logo.png" 
+          alt="Klimabot Logo" 
+          className="h-10 object-contain" 
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+            e.currentTarget.parentElement!.innerHTML = '<span class="text-xl font-bold text-green-700 tracking-tight">klimabot</span>';
+          }}
+        />
+      </div>
+      
+      {/* Wrapper Dropdown dengan Relative Positioning */}
+      <div className="relative" ref={dropdownRef}>
+        {/* Tombol Profile */}
+        <div 
+          className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors select-none"
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        >
+          <img 
+            src="https://i.pravatar.cc/150?u=pertamina" 
+            alt="Profile" 
+            className="w-8 h-8 rounded-full border border-gray-200"
+          />
+          <span className="text-sm font-medium text-gray-700">PT. Pertamina</span>
+          <ChevronDown 
+            className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} 
+          />
+        </div>
+
+        {/* Menu Dropdown */}
+        {isDropdownOpen && (
+          <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50 origin-top-right animate-in fade-in zoom-in-95 duration-100">
+            <button 
+              onClick={() => {
+                setIsDropdownOpen(false);
+                alert('Halaman profil belum tersedia.');
+              }}
+              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"
+            >
+              <User className="w-4 h-4 text-gray-400" />
+              Profile
+            </button>
+            
+            <div className="h-px bg-gray-100 my-1"></div>
+            
+            <button 
+              onClick={handleLogout}
+              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors"
+            >
+              <LogOut className="w-4 h-4 text-red-500" />
+              Keluar
+            </button>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+};
 
 interface StatCardProps {
   title: string;
