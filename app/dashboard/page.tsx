@@ -118,7 +118,7 @@ const Navbar = () => {
           className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors"
         >
           <img
-            src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fseeklogo.com%2Fimages%2FI%2Findofood-logo-DB0FFAFA8D-seeklogo.com.png&f=1&nofb=1&ipt=03b17765d27438dcfa5c8bfe82dc145ee9ed7eed3426843af08c1c2dc3550892"
+            src="https://media.licdn.com/dms/image/v2/D4E0BAQEk57sKsLxvfQ/company-logo_200_200/company-logo_200_200/0/1691398200285?e=2147483647&v=beta&t=Y9kCZcFSAhF6Q3WqQwFqpsKoYQqLrW8YOyE3OUwiY1k"
             alt="Profile"
             className="w-8 h-8 rounded-full border border-gray-200"
           />
@@ -145,7 +145,8 @@ const Navbar = () => {
             <div className="border-t border-gray-100 my-1" />
             <button
               onClick={() => {
-                /* handle logout */ setDropdownOpen(false);
+                localStorage.removeItem('auth_token');
+                window.location.href = '/login';
               }}
               className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
             >
