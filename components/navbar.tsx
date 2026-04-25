@@ -88,8 +88,8 @@ export default function Navbar() {
             asChild
             className="cursor-pointer hidden md:flex h-10 px-6 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-[0_4px_14px_rgba(5,150,105,0.3)] group transition-all"
           >
-            <Link href="/admin">
-              Dashboard
+            <Link href="/login">
+              Login
               <ArrowRight className="ml-1.5 size-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </Button>
@@ -102,7 +102,11 @@ export default function Navbar() {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle mobile menu"
           >
-            {isMobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            {isMobileMenuOpen ? (
+              <X className="size-5" />
+            ) : (
+              <Menu className="size-5" />
+            )}
           </Button>
         </div>
 
@@ -137,9 +141,9 @@ export default function Navbar() {
             >
               About us
             </Link>
-            
+
             <div className="h-px bg-slate-100 my-1 mx-2" />
-            
+
             <Button
               asChild
               className="w-full mt-1 h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-sm"
