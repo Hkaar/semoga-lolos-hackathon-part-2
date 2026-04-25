@@ -3,7 +3,8 @@ import Problem from "@/components/problem";
 import Navbar from "@/components/navbar";
 import Image from "next/image";
 import HowItWorks from "@/components/how-it-works";
-
+import WhyItMatters from "@/components/why-it-matters";
+import Footer from "@/components/footer";
 export default function Home() {
   return (
     <>
@@ -11,6 +12,8 @@ export default function Home() {
       <Hero />
       <Problem />
       <HowItWorks />
+      <WhyItMatters />
+      <Footer />
     </>
   );
 }
