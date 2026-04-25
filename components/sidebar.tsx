@@ -26,12 +26,12 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const navItems: NavItem[] = [
-    { name: 'Dashboard', icon: LayoutDashboard, href: '/admin' },
-    { name: 'Actions', icon: ClipboardList, href: '/admin/actions' },
-    { name: 'Proofs', icon: ShieldCheck, href: '/admin/proofs' },
-    { name: 'Impact', icon: BarChart2, href: '/admin/impact' },
-    { name: 'Funding', icon: Wallet, href: '/admin/funding' },
-    { name: 'Settings', icon: Settings, href: '/admin/settings' },
+    { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
+    { name: 'Actions', icon: ClipboardList, href: '/dashboard/actions' },
+    { name: 'Proofs', icon: ShieldCheck, href: '/dashboard/proofs' },
+    { name: 'Impact', icon: BarChart2, href: '/dashboard/impact' },
+    { name: 'Funding', icon: Wallet, href: '/dashboard/funding' },
+    { name: 'Settings', icon: Settings, href: '/dashboard/settings' },
   ];
 
   return (
