@@ -1,379 +1,456 @@
 "use client";
 
-import React, { useState } from 'react';
-import { 
-  Bell, 
-  Pencil, 
-  CheckCircle2, 
-  Target, 
-  Building, 
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Bell,
+  ChevronDown,
+  Pencil,
+  ShieldCheck,
+  Target,
+  Building2,
   CreditCard,
-  Recycle,
-  Cloud,
-  Leaf,
-  MapPin,
   Rocket,
   Wallet,
-  CalendarCheck,
-  Coins,
-  ChevronDown,
+  Calendar,
+  MapPin,
+  PlusCircle,
+  CheckSquare,
+  Square,
   Info,
-  Check
-} from 'lucide-react';
+  Database,
+  User,
+  Settings,
+  LogOut,
+} from "lucide-react";
+import Link from "next/link";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface FocusCategory {
+  id: string;
+  label: string;
+  description: string;
+}
+
+const FOCUS_CATEGORIES: FocusCategory[] = [
+  {
+    id: "plastic",
+    label: "Plastic Waste",
+    description: "Pengelolaan sampah plastik (botol, sachet)",
+  },
+  {
+    id: "air",
+    label: "Air Pollution",
+    description: "Penyerapan karbon / emisi",
+  },
+  {
+    id: "general",
+    label: "General Environment",
+    description: "Aksi hijau lainnya (bersih pantai, dll)",
+  },
+];
+
+const WILAYAH_OPTIONS = [
+  "Nasional",
+  "Jawa",
+  "Sumatera",
+  "Kalimantan",
+  "Sulawesi",
+  "Papua",
+];
+
+// ─── Shared Navbar (same style as dashboard) ─────────────────────────────────
+
+function Navbar() {
+  const router = useRouter();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <nav className="flex justify-between items-center py-4 mb-6 bg-white px-6 shadow-sm rounded-xl">
+      {/* Logo — same as dashboard */}
+      <div className="flex items-center">
+        <Link href={"/dashboard"}>
+          <img
+            src="images/logo.png"
+            alt="Klimabot Logo"
+            className="h-10 object-contain"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+              e.currentTarget.parentElement!.innerHTML =
+                '<span class="text-xl font-bold text-green-700 tracking-tight">klimabot</span>';
+            }}
+          />
+        </Link>
+      </div>
+
+      {/* Profile dropdown */}
+      <div className="relative" ref={dropdownRef}>
+        <button
+          onClick={() => setDropdownOpen((v) => !v)}
+          className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors"
+        >
+          <img
+            src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fseeklogo.com%2Fimages%2FI%2Findofood-logo-DB0FFAFA8D-seeklogo.com.png&f=1&nofb=1&ipt=03b17765d27438dcfa5c8bfe82dc145ee9ed7eed3426843af08c1c2dc3550892"
+            alt="Profile"
+            className="w-8 h-8 rounded-full border border-gray-200"
+          />
+          <span className="text-sm font-medium text-gray-700">
+            PT. Indofood
+          </span>
+          <ChevronDown
+            className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        {dropdownOpen && (
+          <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl border border-gray-100 shadow-lg py-1 z-50">
+            <button
+              onClick={() => {
+                router.push("/profile");
+                setDropdownOpen(false);
+              }}
+              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-green-700 bg-green-50 font-medium transition-colors"
+            >
+              <User size={15} className="text-green-600" />
+              Profil Perusahaan
+            </button>
+            <div className="border-t border-gray-100 my-1" />
+            <button
+              onClick={() => setDropdownOpen(false)}
+              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+            >
+              <LogOut size={15} className="text-red-400" />
+              Keluar
+            </button>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+}
+
+// ─── Section Card ─────────────────────────────────────────────────────────────
+
+function SectionCard({
+  number,
+  icon,
+  title,
+  subtitle,
+  children,
+}: {
+  number: number;
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+      <div className="flex items-start gap-3 mb-5">
+        <div className="w-9 h-9 rounded-xl bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0">
+          {icon}
+        </div>
+        <div>
+          <h2 className="text-sm font-semibold text-gray-800">
+            {number}. {title}
+          </h2>
+          <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>
+        </div>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function ProfilePage() {
-  // State untuk interaktivitas form filter dampak
-  const [categories, setCategories] = useState({
-    plastic: true,
-    air: false,
-    general: false
-  });
-  
-  const [region, setRegion] = useState('Nasional');
-  const [volume, setVolume] = useState('100.000');
+  const [selectedFocus, setSelectedFocus] = useState<string[]>(["plastic"]);
+  const [wilayah, setWilayah] = useState("Nasional");
+  const [targetVolume, setTargetVolume] = useState("100.000");
+  const [showWilayahDropdown, setShowWilayahDropdown] = useState(false);
 
-  // Fungsi toggle checkbox kategori
-  const toggleCategory = (key: keyof typeof categories) => {
-    setCategories(prev => ({ ...prev, [key]: !prev[key] }));
+  const toggleFocus = (id: string) => {
+    setSelectedFocus((prev) =>
+      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id],
+    );
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] p-4 md:p-8 font-sans pb-12">
+    <div className="min-h-screen bg-[#F8F9FA] p-4 md:p-8 font-sans">
       <div className="max-w-7xl mx-auto">
-        
-        {/* --- HEADER NAVBAR --- */}
-        <nav className="flex flex-col md:flex-row justify-between items-start md:items-center py-4 mb-8 bg-white px-6 shadow-sm rounded-2xl border border-gray-100">
-          <div className="flex items-center gap-4 mb-4 md:mb-0">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-               <img 
-                src="images/logo.png" 
-                alt="Klimabot Logo" 
-                className="h-8 object-contain" 
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.parentElement!.innerHTML = '<Leaf className="w-6 h-6 text-green-600" /><span class="text-xl font-bold text-green-700 tracking-tight">klimabot</span>';
-                }}
-              />
-            </div>
-            
-            {/* Divider */}
-            <div className="hidden md:block h-10 w-px bg-gray-200 mx-2"></div>
-            
-            {/* Page Title */}
-            <div>
-              <h1 className="text-lg font-bold text-gray-900 leading-tight">Profil Perusahaan</h1>
-              <p className="text-xs text-gray-500 mt-0.5">Kelola informasi perusahaan, preferensi dampak, dan pengaturan akun Anda.</p>
-            </div>
-          </div>
+        <Navbar />
 
-          <div className="flex items-center gap-4 w-full md:w-auto justify-end">
-            {/* Notification Bell */}
-            <button className="relative p-2 text-gray-400 hover:bg-gray-50 rounded-full transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
-            
-            {/* User Profile */}
-            <div className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-xl transition-colors">
-              <div className="flex flex-col text-right hidden sm:flex">
-                <span className="text-sm font-semibold text-gray-700">Siti Aminah</span>
-                <span className="text-xs text-gray-500">Head of CSR & ESG Target</span>
-              </div>
-              <img 
-                src="https://i.pravatar.cc/150?u=siti" 
-                alt="Profile" 
-                className="w-10 h-10 rounded-full border border-gray-200 bg-green-50"
-              />
-            </div>
-          </div>
-        </nav>
-
-        {/* --- SECTION 1: PROFIL PERUSAHAAN CARD --- */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 w-full md:w-auto text-center sm:text-left">
-            {/* Company Logo Badge */}
-            <div className="w-24 h-24 rounded-full border-2 border-gray-50 shadow-sm flex items-center justify-center p-2 bg-white flex-shrink-0">
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/id/thumb/e/e1/Indofood_logo.svg/1200px-Indofood_logo.svg.png" 
-                alt="Indofood Logo" 
-                className="w-full object-contain"
-                onError={(e) => {
-                   e.currentTarget.src = "https://ui-avatars.com/api/?name=Indofood&background=f0fdf4&color=166534&bold=true";
-                }}
-              />
-            </div>
-            
-            {/* Company Details */}
-            <div className="pt-2">
-              <h2 className="text-2xl font-bold text-gray-900">PT Indofood Sukses Makmur Tbk.</h2>
-              <p className="text-gray-800 font-medium mt-2">Siti Aminah</p>
-              <p className="text-sm text-gray-500">Head of CSR & ESG Target</p>
-              
-              <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-semibold border border-green-200">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Verified Corporate
-              </div>
-            </div>
-          </div>
-          
-          <button className="w-full md:w-auto flex items-center justify-center gap-2 px-5 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm">
-            <Pencil className="w-4 h-4" /> Ubah Profil
-          </button>
+        {/* Page title */}
+        <div className="mb-6">
+          <h1 className="text-xl font-bold text-gray-900">Profil Perusahaan</h1>
+          <p className="text-sm text-gray-400 mt-0.5">
+            Kelola informasi perusahaan, preferensi dampak, dan pengaturan akun
+            Anda.
+          </p>
         </div>
 
-        {/* --- MIDDLE GRID (Filter & Legality) --- */}
+        {/* ── Section 1: Identity ── */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 rounded-xl border border-gray-100 bg-gray-50 flex items-center justify-center flex-shrink-0">
+              <span className="text-blue-700 font-bold text-base italic tracking-tight">
+                Indofood
+              </span>
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">
+                PT Indofood Sukses Makmur Tbk.
+              </h2>
+              <p className="text-sm text-gray-500">Siti Aminah</p>
+              <p className="text-sm text-gray-400">Head of CSR & ESG Target</p>
+              <span className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded-full bg-green-50 text-green-700 text-xs font-medium border border-green-100">
+                <ShieldCheck size={12} />
+                Verified Corporate
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Sections 2 & 3 ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          
-          {/* SECTION 2: Pengaturan Filter Dampak */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 flex flex-col h-full">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-green-50 rounded-lg text-green-700">
-                <Target className="w-5 h-5" />
-              </div>
+          {/* Section 2 */}
+          <SectionCard
+            number={2}
+            icon={<Target size={18} />}
+            title="Pengaturan Filter Dampak & Alokasi"
+            subtitle="Tentukan fokus dampak dan target alokasi perusahaan Anda."
+          >
+            <div className="space-y-4">
               <div>
-                <h3 className="text-base font-bold text-gray-900">2. Pengaturan Filter Dampak & Alokasi</h3>
-                <p className="text-xs text-gray-500 mt-0.5">Tentukan fokus dampak dan target alokasi perusahaan Anda.</p>
-              </div>
-            </div>
-
-            <div className="space-y-6 flex-grow">
-              {/* Kategori Fokus */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Kategori Fokus</label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  
-                  {/* Option 1: Plastic Waste */}
-                  <div 
-                    onClick={() => toggleCategory('plastic')}
-                    className={`relative border rounded-xl p-3 cursor-pointer transition-all ${
-                      categories.plastic ? 'border-green-600 bg-green-50/30' : 'border-gray-200 hover:border-green-300'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className={`mt-0.5 flex-shrink-0 w-4 h-4 rounded flex items-center justify-center border ${
-                        categories.plastic ? 'bg-green-600 border-green-600 text-white' : 'border-gray-300'
-                      }`}>
-                        {categories.plastic && <Check className="w-3 h-3" />}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5 text-sm font-medium text-gray-800 mb-1">
-                          <Recycle className="w-4 h-4 text-green-600" /> Plastic Waste
+                <p className="text-xs font-medium text-gray-500 mb-2">
+                  Kategori Fokus
+                </p>
+                <div className="space-y-2">
+                  {FOCUS_CATEGORIES.map((cat) => {
+                    const active = selectedFocus.includes(cat.id);
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => toggleFocus(cat.id)}
+                        className={`w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${
+                          active
+                            ? "border-green-200 bg-green-50"
+                            : "border-gray-100 bg-gray-50 hover:border-gray-200"
+                        }`}
+                      >
+                        {active ? (
+                          <CheckSquare
+                            size={16}
+                            className="text-green-600 flex-shrink-0"
+                          />
+                        ) : (
+                          <Square
+                            size={16}
+                            className="text-gray-300 flex-shrink-0"
+                          />
+                        )}
+                        <div>
+                          <p
+                            className={`text-sm font-medium ${active ? "text-green-800" : "text-gray-600"}`}
+                          >
+                            {cat.label}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            {cat.description}
+                          </p>
                         </div>
-                        <p className="text-[10px] text-gray-500 leading-tight">Pengelolaan sampah plastik (botol, sachet)</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Option 2: Air Pollution */}
-                  <div 
-                    onClick={() => toggleCategory('air')}
-                    className={`relative border rounded-xl p-3 cursor-pointer transition-all ${
-                      categories.air ? 'border-green-600 bg-green-50/30' : 'border-gray-200 hover:border-green-300'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className={`mt-0.5 flex-shrink-0 w-4 h-4 rounded flex items-center justify-center border ${
-                        categories.air ? 'bg-green-600 border-green-600 text-white' : 'border-gray-300'
-                      }`}>
-                        {categories.air && <Check className="w-3 h-3" />}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5 text-sm font-medium text-gray-800 mb-1">
-                          <Cloud className="w-4 h-4 text-gray-400" /> Air Pollution
-                        </div>
-                        <p className="text-[10px] text-gray-500 leading-tight">Penyerapan karbon / emisi</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Option 3: General */}
-                  <div 
-                    onClick={() => toggleCategory('general')}
-                    className={`relative border rounded-xl p-3 cursor-pointer transition-all ${
-                      categories.general ? 'border-green-600 bg-green-50/30' : 'border-gray-200 hover:border-green-300'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className={`mt-0.5 flex-shrink-0 w-4 h-4 rounded flex items-center justify-center border ${
-                        categories.general ? 'bg-green-600 border-green-600 text-white' : 'border-gray-300'
-                      }`}>
-                        {categories.general && <Check className="w-3 h-3" />}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5 text-sm font-medium text-gray-800 mb-1">
-                          <Leaf className="w-4 h-4 text-green-600" /> General Environment
-                        </div>
-                        <p className="text-[10px] text-gray-500 leading-tight">Aksi hijau lainnya (bersih pantai, dll)</p>
-                      </div>
-                    </div>
-                  </div>
-
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Target Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-800 mb-2">Target Wilayah CSR</label>
+                  <p className="text-xs font-medium text-gray-500 mb-1.5">
+                    Target Wilayah CSR
+                  </p>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <select 
-                      value={region}
-                      onChange={(e) => setRegion(e.target.value)}
-                      className="w-full pl-9 pr-10 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600 appearance-none text-gray-800"
+                    <button
+                      onClick={() =>
+                        setShowWilayahDropdown(!showWilayahDropdown)
+                      }
+                      className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-700 hover:border-gray-300 transition-colors"
                     >
-                      <option value="Nasional">Nasional</option>
-                      <option value="Jawa">Pulau Jawa</option>
-                      <option value="Sumatera">Pulau Sumatera</option>
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                      <span className="flex items-center gap-1.5">
+                        <MapPin size={13} className="text-gray-400" />
+                        {wilayah}
+                      </span>
+                      <ChevronDown size={13} className="text-gray-400" />
+                    </button>
+                    {showWilayahDropdown && (
+                      <div className="absolute top-full mt-1 left-0 w-full bg-white border border-gray-100 rounded-xl shadow-lg z-10 overflow-hidden">
+                        {WILAYAH_OPTIONS.map((opt) => (
+                          <button
+                            key={opt}
+                            onClick={() => {
+                              setWilayah(opt);
+                              setShowWilayahDropdown(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 text-sm hover:bg-green-50 transition-colors ${
+                              wilayah === opt
+                                ? "text-green-700 font-medium"
+                                : "text-gray-600"
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-800 mb-2">Target Volume Tahunan</label>
-                  <div className="relative">
-                    <input 
-                      type="text" 
-                      value={volume}
-                      onChange={(e) => setVolume(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600 text-gray-800"
+                  <p className="text-xs font-medium text-gray-500 mb-1.5">
+                    Target Volume Tahunan
+                  </p>
+                  <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-green-400 transition-colors bg-white">
+                    <input
+                      type="text"
+                      value={targetVolume}
+                      onChange={(e) => setTargetVolume(e.target.value)}
+                      className="flex-1 px-3 py-2.5 text-sm text-gray-700 outline-none bg-transparent min-w-0"
                     />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 pointer-events-none">
+                    <span className="px-2.5 py-2.5 text-xs text-gray-400 bg-gray-50 border-l border-gray-100 whitespace-nowrap">
                       Kg Plastik
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
+
+              <p className="text-xs text-gray-400 flex items-center gap-1.5">
+                <Info size={12} />
+                Target ini akan digunakan untuk menghitung progress dampak di
+                dashboard.
+              </p>
             </div>
+          </SectionCard>
 
-            <div className="mt-6 pt-4 border-t border-gray-100 flex items-start gap-2 text-gray-500">
-              <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
-              <p className="text-xs">Target ini akan digunakan untuk menghitung progress dampak di dashboard.</p>
+          {/* Section 3 */}
+          <SectionCard
+            number={3}
+            icon={<Building2 size={18} />}
+            title="Detail Legalitas Perusahaan"
+            subtitle="Informasi legalitas dan identitas perusahaan."
+          >
+            <div className="divide-y divide-gray-50">
+              {[
+                {
+                  label: "Nama Perusahaan",
+                  value: "PT Indofood Sukses Makmur Tbk.",
+                },
+                { label: "Nomor Induk Berusaha (NIB)", value: "8120391xxxxxx" },
+                {
+                  label: "Sektor Industri",
+                  value: "FMCG (Fast Moving Consumer Goods)",
+                },
+                {
+                  label: "Alamat Kantor Pusat",
+                  value: "Sudirman Plaza,\nJakarta Selatan 12920",
+                },
+              ].map((row) => (
+                <div key={row.label} className="flex gap-3 py-3">
+                  <p className="text-sm text-gray-400 w-44 flex-shrink-0">
+                    {row.label}
+                  </p>
+                  <p className="text-sm text-gray-700 font-medium whitespace-pre-line">
+                    {row.value}
+                  </p>
+                </div>
+              ))}
             </div>
-          </div>
-
-          {/* SECTION 3: Detail Legalitas Perusahaan */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 flex flex-col h-full">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-green-50 rounded-lg text-green-700">
-                <Building className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-gray-900">3. Detail Legalitas Perusahaan</h3>
-                <p className="text-xs text-gray-500 mt-0.5">Informasi legalitas dan identitas perusahaan.</p>
-              </div>
-            </div>
-
-            <div className="flex-grow flex flex-col justify-center">
-              <div className="space-y-0 text-sm">
-                
-                <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100">
-                  <span className="text-gray-500 sm:w-1/3 mb-1 sm:mb-0">Nama Perusahaan</span>
-                  <span className="hidden sm:block text-gray-400 mr-4">:</span>
-                  <span className="text-gray-900 font-medium sm:w-2/3">PT Indofood Sukses Makmur Tbk.</span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100">
-                  <span className="text-gray-500 sm:w-1/3 mb-1 sm:mb-0">Nomor Induk Berusaha (NIB)</span>
-                  <span className="hidden sm:block text-gray-400 mr-4">:</span>
-                  <span className="text-gray-900 font-medium sm:w-2/3">8120391xxxxxx</span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100">
-                  <span className="text-gray-500 sm:w-1/3 mb-1 sm:mb-0">Sektor Industri</span>
-                  <span className="hidden sm:block text-gray-400 mr-4">:</span>
-                  <span className="text-gray-900 font-medium sm:w-2/3">FMCG (Fast Moving Consumer Goods)</span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-start py-4">
-                  <span className="text-gray-500 sm:w-1/3 mb-1 sm:mb-0">Alamat Kantor Pusat</span>
-                  <span className="hidden sm:block text-gray-400 mr-4">:</span>
-                  <span className="text-gray-900 font-medium sm:w-2/3 leading-relaxed">
-                    Sudirman Plaza,<br />
-                    Jakarta Selatan 12920
-                  </span>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
+          </SectionCard>
         </div>
 
-        {/* --- SECTION 4: Paket Langganan --- */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-green-50 rounded-lg text-green-700">
-              <CreditCard className="w-5 h-5" />
+        {/* ── Section 4: Billing ── */}
+        <SectionCard
+          number={4}
+          icon={<CreditCard size={18} />}
+          title="Paket Langganan & Tagihan"
+          subtitle="Informasi paket berlangganan dan pengelolaan dana CSR."
+        >
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="bg-gray-50 rounded-xl p-4">
+              <div className="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center mb-3">
+                <Rocket size={20} />
+              </div>
+              <p className="text-xs text-gray-400 mb-0.5">Paket Saat Ini</p>
+              <p className="text-sm font-bold text-gray-800">
+                Enterprise Plan (SaaS)
+              </p>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Akses penuh ke semua fitur premium
+              </p>
             </div>
-            <div>
-              <h3 className="text-base font-bold text-gray-900">4. Paket Langganan & Tagihan</h3>
-              <p className="text-xs text-gray-500 mt-0.5">Informasi paket berlangganan dan pengelolaan dana CSR.</p>
+
+            <div className="bg-gray-50 rounded-xl p-4">
+              <div className="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center mb-3">
+                <Wallet size={20} />
+              </div>
+              <p className="text-xs text-gray-400 mb-0.5">Harga Langganan</p>
+              <p className="text-sm font-bold text-gray-800">
+                Rp 15.000.000{" "}
+                <span className="font-normal text-gray-400 text-xs">
+                  / Bulan
+                </span>
+              </p>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Termasuk semua fitur & dukungan prioritas
+              </p>
+            </div>
+
+            <div className="bg-gray-50 rounded-xl p-4">
+              <div className="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center mb-3">
+                <Calendar size={20} />
+              </div>
+              <p className="text-xs text-gray-400 mb-0.5">Status Tagihan</p>
+              <p className="text-sm font-bold text-gray-800 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />
+                Aktif
+              </p>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Next billing: 25 Mei 2026
+              </p>
+            </div>
+
+            <div className="bg-gray-50 rounded-xl p-4 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center mb-3">
+                  <Database size={20} />
+                </div>
+                <p className="text-xs text-gray-400 mb-0.5">
+                  Sisa Saldo Dana CSR
+                </p>
+                <p className="text-sm font-bold text-gray-800">Rp 50.000.000</p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Alokasi insentif untuk warga
+                </p>
+              </div>
             </div>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            
-            {/* Paket Saat Ini */}
-            <div className="p-5 rounded-xl bg-gray-50/50 border border-gray-100 flex items-start gap-4">
-              <div className="p-2.5 bg-white rounded-full shadow-sm border border-gray-100">
-                <Rocket className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 mb-1">Paket Saat Ini</p>
-                <p className="text-sm font-bold text-gray-900">Enterprise Plan (SaaS)</p>
-                <p className="text-xs text-gray-500 mt-1">Akses penuh ke semua fitur premium</p>
-              </div>
-            </div>
-
-            {/* Harga Langganan */}
-            <div className="p-5 rounded-xl bg-gray-50/50 border border-gray-100 flex items-start gap-4">
-              <div className="p-2.5 bg-white rounded-full shadow-sm border border-gray-100">
-                <Wallet className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 mb-1">Harga Langganan</p>
-                <p className="text-sm font-bold text-gray-900">Rp 15.000.000 <span className="font-normal text-xs text-gray-500">/ Bulan</span></p>
-                <p className="text-xs text-gray-500 mt-1 leading-tight">Termasuk semua fitur & dukungan prioritas</p>
-              </div>
-            </div>
-
-            {/* Status Tagihan */}
-            <div className="p-5 rounded-xl bg-gray-50/50 border border-gray-100 flex items-start gap-4">
-              <div className="p-2.5 bg-white rounded-full shadow-sm border border-gray-100">
-                <CalendarCheck className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 mb-1">Status Tagihan</p>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                  <p className="text-sm font-bold text-gray-900">Aktif</p>
-                </div>
-                <p className="text-xs text-gray-500 mt-1">Next billing: 25 Mei 2026</p>
-              </div>
-            </div>
-
-            {/* Sisa Saldo Dana */}
-            <div className="p-5 rounded-xl bg-green-50/30 border border-green-100 flex flex-col justify-between">
-              <div className="flex items-start gap-4 mb-4">
-                <div className="p-2.5 bg-white rounded-full shadow-sm border border-green-100">
-                  <Coins className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-600 mb-1">Sisa Saldo Dana CSR</p>
-                  <p className="text-lg font-bold text-gray-900">Rp 50.000.000</p>
-                  <p className="text-xs text-gray-500 mt-0.5">Alokasi insentif untuk warga</p>
-                </div>
-              </div>
-              <button className="w-full py-2 bg-white border border-green-600 text-green-700 rounded-lg text-xs font-semibold hover:bg-green-50 transition-colors flex justify-center items-center gap-2">
-                <Wallet className="w-3.5 h-3.5" /> Top Up Saldo
-              </button>
-            </div>
-
-          </div>
-        </div>
-
+        </SectionCard>
       </div>
     </div>
   );
