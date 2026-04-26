@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Highlighter } from "@/components/ui/highlighter";
 
 const BentoGrid = ({
   children,
@@ -42,7 +43,7 @@ const BentoCard = ({
   Icon: any;
   description: string;
   href: string;
-  cta: string;
+  cta?: string;
   colorClass: string;
 }) => (
   <div
@@ -58,7 +59,7 @@ const BentoCard = ({
     <div className="absolute inset-0 w-full h-full overflow-hidden">{background}</div>
     
     {/* Overlay tipis agar teks tetap terbaca */}
-    <div className="absolute inset-0 bg-linear-to-t from-white/90 via-white/40 to-transparent z-0" />
+    <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/40 to-transparent z-0" />
 
     {/* Konten Utama (Bergeser ke atas saat di-hover) */}
     <div className="pointer-events-none z-10 flex transform-gpu flex-col gap-2 p-6 sm:p-8 transition-all duration-500 group-hover:-translate-y-10 mt-auto">
@@ -171,7 +172,7 @@ export default function Problem() {
   ];
 
   return (
-    <section className="relative py-24 lg:py-32 px-5 sm:px-6 max-w-7xl mx-auto overflow-hidden bg-white">
+    <section id="problems" className="relative py-24 lg:py-32 px-5 sm:px-6 max-w-7xl mx-auto overflow-hidden bg-white">
       
       {/* ── HEADER SECTION ── */}
       <div className="flex flex-col items-center text-center mb-16 lg:mb-24">
@@ -187,11 +188,17 @@ export default function Problem() {
         </div>
 
         <h2 
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 tracking-tighter mb-6 leading-[1.1]"
+          className="capitalize text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 tracking-tighter mb-6 leading-[1.1]"
           style={{ fontFamily: '"Geist", "Geist Sans", sans-serif' }}
         >
           Why the current system <br className="hidden sm:block" />
-          is <span className="text-transparent bg-clip-text bg-linear-to-r from-red-500 to-orange-500">broken.</span>
+          is{" "}
+          {/* Highlighter diperbaiki menjadi merah untuk menandakan masalah */}
+          <Highlighter action="highlight" color="#ef4444">
+            <span className="text-white px-2">
+              broken.
+            </span>
+          </Highlighter>
         </h2>
 
         <p 

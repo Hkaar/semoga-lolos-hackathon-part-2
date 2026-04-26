@@ -169,7 +169,7 @@ export default function WhyItMatters() {
         </Badge>
 
         <h2 
-          className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tighter mb-6 leading-[1.1]"
+          className="capitalize text-4xl sm:text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tighter mb-6 leading-[1.1]"
           style={{ fontFamily: '"Geist", "Geist Sans", sans-serif' }}
         >
           Why it <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-600">matters.</span>
