@@ -2,24 +2,27 @@
 
 export default function Loading() {
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0f1a12]">
-      <div className="flex items-center gap-2">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+      {/* Logo */}
+      <div className="flex items-center gap-2 mb-10">
         <img
           src="images/logo.png"
           alt="Klimabot Logo"
-          className="h-10 object-contain"
+          className="h-7 object-contain"
           onError={(e) => {
             e.currentTarget.style.display = "none";
-            e.currentTarget.parentElement!.innerHTML =
-              '<span class="text-xl font-bold text-green-700 tracking-tight">klimabot</span>';
           }}
         />
-        <span className="text-white text-xl font-bold tracking-tight">
+        <span className="text-gray-900 text-lg font-semibold tracking-tight">
           klimabot
         </span>
       </div>
-      <div className="mt-6 w-40 h-0.5 bg-white/10 rounded-full overflow-hidden">
-        <div className="h-full bg-green-500 rounded-full animate-[loading_1.5s_ease-in-out_infinite]" />
+
+      {/* Minimal dot pulse */}
+      <div className="flex items-center gap-1.5">
+        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-[pulse_1.2s_ease-in-out_infinite]" />
+        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-[pulse_1.2s_ease-in-out_0.2s_infinite]" />
+        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-[pulse_1.2s_ease-in-out_0.4s_infinite]" />
       </div>
     </div>
   );
