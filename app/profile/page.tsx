@@ -123,7 +123,7 @@ function Navbar() {
           className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors"
         >
           <img
-            src="https://media.licdn.com/dms/image/v2/D4E0BAQEk57sKsLxvfQ/company-logo_200_200/company-logo_200_200/0/1691398200285?e=2147483647&v=beta&t=Y9kCZcFSAhF6Q3WqQwFqpsKoYQqLrW8YOyE3OUwiY1k"
+            src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Indofood_logo-id.svg"
             alt="Profile"
             className="w-8 h-8 rounded-full border border-gray-200 object-contain bg-white p-1"
           />
@@ -327,7 +327,7 @@ export default function ProfilePage() {
           <div className="flex items-center gap-5">
             <div className="w-16 h-16 rounded-xl border border-gray-100 bg-white flex items-center justify-center flex-shrink-0 p-2">
               <img
-                src="https://media.licdn.com/dms/image/v2/D4E0BAQEk57sKsLxvfQ/company-logo_200_200/company-logo_200_200/0/1691398200285?e=2147483647&v=beta&t=Y9kCZcFSAhF6Q3WqQwFqpsKoYQqLrW8YOyE3OUwiY1k"
+                src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Indofood_logo-id.svg"
                 alt="Logo Indofood"
                 className="w-full h-full object-contain"
               />

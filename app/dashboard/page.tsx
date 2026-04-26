@@ -11,6 +11,8 @@ import {
   User,
   LogOut,
   Settings,
+  FileText,
+  Link,
 } from "lucide-react";
 
 // --- TYPESCRIPT INTERFACES ---
@@ -118,7 +120,7 @@ const Navbar = () => {
           className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors"
         >
           <img
-            src="https://media.licdn.com/dms/image/v2/D4E0BAQEk57sKsLxvfQ/company-logo_200_200/company-logo_200_200/0/1691398200285?e=2147483647&v=beta&t=Y9kCZcFSAhF6Q3WqQwFqpsKoYQqLrW8YOyE3OUwiY1k"
+            src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Indofood_logo-id.svg"
             alt="Profile"
             className="w-8 h-8 rounded-full border border-gray-200"
           />
@@ -232,9 +234,20 @@ const FeedTable = ({
   onPageChange,
 }: FeedTableProps) => (
   <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col h-full">
-    <h2 className="text-lg font-bold text-gray-900 mb-6">
-      Feed Aksi Terverifikasi
-    </h2>
+    <div className="flex items-center justify-between mb-6">
+      <h2 className="text-lg font-bold text-gray-900">
+        Feed Aksi Terverifikasi
+      </h2>
+      <a
+        href="/report"
+        target="_blank"
+        className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-green-700 border border-green-200 rounded-lg hover:bg-green-50 transition-colors"
+      >
+        <FileText className="w-3.5 h-3.5" />
+        Unduh Laporan CSR
+      </a>
+    </div>
+
     <div className="overflow-x-auto flex-grow">
       <table className="w-full text-sm text-left">
         <thead className="text-xs text-gray-500 border-b border-gray-100">
