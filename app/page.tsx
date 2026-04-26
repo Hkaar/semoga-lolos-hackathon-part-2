@@ -4,6 +4,7 @@ import Image from "next/image";
 import HowItWorks from "@/components/how-it-works";
 import WhyItMatters from "@/components/why-it-matters";
 import Footer from "@/components/footer";
+import Navbar from "@/components/navbar";
 export default function Home() {
   return (
     <>
