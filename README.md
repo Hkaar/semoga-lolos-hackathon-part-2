@@ -45,3 +45,11 @@ Hackfest 2026 - Code for Humanity
 - Gemini API
 - Grammy.js - Telegram Bot
 - Nominatim (OpenStreetMap) - Reverse Geocoding
+
+## Screenshots
+
+![Landing Page](showcase/s1.png)
+![Login Page](showcase/s2.png)
+![Dashboard](showcase/s3.png)
+![Profil Perusahaan](showcase/s4.png)
+![Top up Saldo CSR Perusahaan](showcase/s5.png)
