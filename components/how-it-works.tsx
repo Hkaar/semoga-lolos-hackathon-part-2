@@ -162,7 +162,7 @@ export default function HowItWorks() {
 
           {/* Menghubungkan narasi: Masalah sebelumnya rusak, ini penawarnya */}
           <h2 
-            className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tighter mb-6 leading-[1.1]"
+            className="capitalize text-4xl sm:text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tighter mb-6 leading-[1.1]"
             style={{ fontFamily: '"Geist", "Geist Sans", sans-serif' }}
           >
             Replace trust with <br className="hidden sm:block" />
